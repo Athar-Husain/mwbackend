@@ -72,10 +72,7 @@ export const getAllPlans = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
-=======
 // api/plans/getAllPlans
->>>>>>> 0338fc4 (Initial commit - updated backend)
 // export const getAllPlans = async (req, res) => {
 //   try {
 //     const plans = await Plan.find({ isDeleted: false }).populate(

@@ -42,10 +42,7 @@ const teamSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-<<<<<<< HEAD
-=======
   fcmTokens: [{ type: String }], // Stores multiple device tokens
->>>>>>> 0338fc4 (Initial commit - updated backend)
 });
 
 // Password hashing before saving

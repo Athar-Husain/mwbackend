@@ -9,12 +9,6 @@ import {
   getFilteredConnections,
   updateSubscribedPlan,
   getSubscribedPlans,
-<<<<<<< HEAD
-} from '../controllers/ConnectionController.js';
-
-const router = express.Router();
-
-=======
   getConnectionsForUser,
   getActiveConnectionForUser,
 } from '../controllers/ConnectionController.js';
@@ -30,19 +24,12 @@ router.get('/activeconnection', CustomerProtect, getActiveConnectionForUser);
 // Get filtered connections (can combine with getAll if preferred)
 router.get('/filter', getFilteredConnections);
 
->>>>>>> 0338fc4 (Initial commit - updated backend)
 // Create a new connection
 router.post('/', createConnection);
 
 // Get all connections
 router.get('/', getAllConnections);
 
-<<<<<<< HEAD
-// Get filtered connections (can combine with getAll if preferred)
-router.get('/filter', getFilteredConnections);
-
-=======
->>>>>>> 0338fc4 (Initial commit - updated backend)
 // Get connection by ID
 router.get('/:id', getConnectionById);
 

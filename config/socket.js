@@ -8,10 +8,6 @@ export const initSocket = (server) => {
   if (!server) {
     throw new Error('HTTP server instance is required to initialize Socket.IO');
   }
-<<<<<<< HEAD
-=======
-
->>>>>>> 0338fc4 (Initial commit - updated backend)
   io = new Server(server, {
     cors: {
       origin: process.env.CORS_ORIGIN || '*', // Use environment variable

@@ -37,10 +37,7 @@ router.post('/subscription/admin', adminOrTeamSubscribeToPlan); // Subscribe to 
 // ---------- Plans Routes ----------
 router.post('/plans', createPlan); // Create a plan
 router.get('/plans', getAllPlans); // Get all plans
-<<<<<<< HEAD
-=======
 // api/plan/plans
->>>>>>> 0338fc4 (Initial commit - updated backend)
 router.get('/plans/:id', getPlanById); // Get plan by ID
 router.put('/plans/:id', updatePlan); // Update a plan
 router.delete('/plans/:id', deletePlan); // Delete (soft delete) a plan

@@ -1,19 +1,13 @@
 import Customer from '../models/Customer.model.js';
-<<<<<<< HEAD
-=======
 import Connection from '../models/Connection.model.js';
->>>>>>> 0338fc4 (Initial commit - updated backend)
 import { validationResult } from 'express-validator';
 import asyncHandler from 'express-async-handler';
 import nodemailer from 'nodemailer';
 import { generateOtp } from '../utils/otp.js'; // You need to create this util
 import { generateToken } from '../utils/index.js';
 import jwt from 'jsonwebtoken';
-<<<<<<< HEAD
-=======
 import { getIo } from '../config/socket.js';
 import { notifyUsers } from '../utils/notifyUsers.js';
->>>>>>> 0338fc4 (Initial commit - updated backend)
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const OTP_EXPIRY_MINUTES = 10;
@@ -65,11 +59,7 @@ export const registerCustomer = asyncHandler(async (req, res) => {
 // ================================
 // Login Customer
 // ================================
-<<<<<<< HEAD
-export const loginCustomer = asyncHandler(async (req, res) => {
-=======
 export const loginCustomerold = asyncHandler(async (req, res) => {
->>>>>>> 0338fc4 (Initial commit - updated backend)
   const { email, password } = req.body;
 
   if (!email || !password)
@@ -107,8 +97,6 @@ export const loginCustomerold = asyncHandler(async (req, res) => {
 });
 
 // ================================
-<<<<<<< HEAD
-=======
 // Login Customer
 // ================================
 export const loginCustomerold2 = asyncHandler(async (req, res) => {
@@ -295,7 +283,6 @@ export const loginCustomer = asyncHandler(async (req, res) => {
 });
 
 // ================================
->>>>>>> 0338fc4 (Initial commit - updated backend)
 // Get Login Status
 // ================================
 export const getLoginStatus = asyncHandler(async (req, res) => {
@@ -327,11 +314,7 @@ export const getCustomerProfile = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: 'Customer not found' });
   }
 
-<<<<<<< HEAD
-  res.status(200).json({ customer });
-=======
   res.status(200).json(customer);
->>>>>>> 0338fc4 (Initial commit - updated backend)
 });
 
 // ================================
@@ -491,9 +474,6 @@ export const changePassword = asyncHandler(async (req, res) => {
 // ================================
 // Logout Customer (Client clears token)
 // ================================
-<<<<<<< HEAD
-export const logoutCustomer = asyncHandler(async (req, res) => {
-=======
 export const logoutCustomerold = asyncHandler(async (req, res) => {
   res.status(200).json({ message: 'Logged out successfully' });
 });
@@ -512,7 +492,6 @@ export const logoutCustomer = asyncHandler(async (req, res) => {
     }
   }
 
->>>>>>> 0338fc4 (Initial commit - updated backend)
   res.status(200).json({ message: 'Logged out successfully' });
 });
 
@@ -525,12 +504,6 @@ export const logoutCustomer = asyncHandler(async (req, res) => {
  * @route   PATCH /api/customers/:customerId/connections/switch
  * @access  Private (e.g., customer or admin protected)
  */
-<<<<<<< HEAD
-export const switchActiveConnection = asyncHandler(async (req, res) => {
-  const { customerId } = req.user.id;
-
-  console.log('customerId', customerId);
-=======
 // export const switchActiveConnection = asyncHandler(async (req, res) => {
 //   const customerId = req.user._id;
 //   console.log('customerId', customerId);
@@ -580,7 +553,6 @@ export const switchActiveConnectionold = asyncHandler(async (req, res) => {
   const customerId = req.user._id;
   // console.log('customerId', customerId);
 
->>>>>>> 0338fc4 (Initial commit - updated backend)
   const { connectionId } = req.body;
 
   // 1. Validate input: Ensure a connectionId is provided.
@@ -594,18 +566,6 @@ export const switchActiveConnectionold = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: 'Customer not found' });
   }
 
-<<<<<<< HEAD
-  // 3. Verify the requested connection belongs to the customer.
-  // Check if the connectionId exists in the customer's `connections` array.
-  // The `connections` array should be populated when a connection is created for a customer.
-  // Let's assume you've already implemented that logic in your `createConnection` controller.
-  const connectionBelongsToCustomer =
-    customer.connections.includes(connectionId);
-  if (!connectionBelongsToCustomer) {
-    return res
-      .status(403)
-      .json({ message: 'Connection does not belong to this customer' });
-=======
   if (customer.activeConnection?.toString() === connectionId) {
     return res.status(200).json({ message: 'Already using this connection' });
   }
@@ -673,7 +633,6 @@ export const switchActiveConnection = asyncHandler(async (req, res) => {
     return res.status(403).json({
       message: 'Connection not found or does not belong to this customer',
     });
->>>>>>> 0338fc4 (Initial commit - updated backend)
   }
 
   // 4. Update the `activeConnection` field.

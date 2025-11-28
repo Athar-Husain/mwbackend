@@ -1,17 +1,4 @@
 // controllers/supportTicketController.js
-<<<<<<< HEAD
-import SupportTicket from '../models/SupportTicket.model.js';
-import Customer from '../models/Customer.model.js';
-import { getIo } from '../config/socket.js'; // Use the robust getter
-import Connection from '../models/Connection.model.js';
-import Team from '../models/Team.model.js';
-import Comment from '../models/Comment.model.js';
-import Attachment from '../models/Attachment.model.js';
-
-import path from 'path';
-
-export const createTicket = async (req, res) => {
-=======
 import path from 'path';
 import SupportTicket from '../models/SupportTicket.model.js';
 import Customer from '../models/Customer.model.js';
@@ -105,27 +92,12 @@ const handleSocketAndNotification = async ({
  * Create ticket (Customer)
  */
 export const createTicketold = async (req, res) => {
->>>>>>> 0338fc4 (Initial commit - updated backend)
   try {
     const { description, issueType, priority } = req.body;
     const customerId = req.user._id;
 
     const customer =
       await Customer.findById(customerId).populate('activeConnection');
-<<<<<<< HEAD
-    if (!customer) {
-      return res.status(404).json({ message: 'Customer not found' });
-    }
-
-    const connection = customer.activeConnection;
-    const serviceAreaId = connection?.serviceArea;
-
-    if (!serviceAreaId) {
-      return res
-        .status(400)
-        .json({ message: 'Service area missing for customer' });
-    }
-=======
     if (!customer)
       return res.status(404).json({ message: 'Customer not found' });
 
@@ -133,7 +105,6 @@ export const createTicketold = async (req, res) => {
     const serviceAreaId = connection?.serviceArea;
     if (!serviceAreaId)
       return res.status(400).json({ message: 'Service area missing' });
->>>>>>> 0338fc4 (Initial commit - updated backend)
 
     const assignedTeamMember = await Team.findOne({ area: serviceAreaId });
     if (!assignedTeamMember) {
@@ -165,16 +136,6 @@ export const createTicketold = async (req, res) => {
 
     await ticket.save();
 
-<<<<<<< HEAD
-    const populatedTicket = await SupportTicket.findById(ticket._id)
-      .populate('customer')
-      .populate('assignedTo')
-      .populate('connection');
-
-    const io = getIo();
-    io.emit('ticketCreated', { ticket: populatedTicket });
-    return res.status(201).json(populatedTicket);
-=======
     const populatedTicket = await SupportTicket.findById(ticket._id).populate(
       'customer assignedTo connection'
     );
@@ -193,7 +154,6 @@ export const createTicketold = async (req, res) => {
     });
 
     res.status(201).json(populatedTicket);
->>>>>>> 0338fc4 (Initial commit - updated backend)
   } catch (err) {
     console.error('Create Ticket Error:', err);
     res
@@ -202,8 +162,6 @@ export const createTicketold = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
-=======
 /**
  * 🎟 Create Ticket (Customer)
  */
@@ -276,7 +234,6 @@ export const createTicket = async (req, res) => {
 /**
  * Internal ticket creation (Admin/Team)
  */
->>>>>>> 0338fc4 (Initial commit - updated backend)
 export const internalCreateTicket = async (req, res) => {
   try {
     const { connectionId, description, priority } = req.body;
@@ -289,19 +246,6 @@ export const internalCreateTicket = async (req, res) => {
 
     const connection =
       await Connection.findById(connectionId).populate('customerId');
-<<<<<<< HEAD
-    if (!connection) {
-      return res.status(404).json({ message: 'Connection not found' });
-    }
-
-    const customerId = connection.customerId?._id;
-    const serviceAreaId = connection.serviceArea;
-
-    if (!customerId || !serviceAreaId) {
-      return res
-        .status(400)
-        .json({ message: 'Customer or service area missing from connection' });
-=======
     if (!connection)
       return res.status(404).json({ message: 'Connection not found' });
 
@@ -311,7 +255,6 @@ export const internalCreateTicket = async (req, res) => {
       return res
         .status(400)
         .json({ message: 'Customer or service area missing' });
->>>>>>> 0338fc4 (Initial commit - updated backend)
     }
 
     const assignedTeamMember = await Team.findOne({ area: serviceAreaId });
@@ -321,11 +264,7 @@ export const internalCreateTicket = async (req, res) => {
         .json({ message: 'No team member found for this service area' });
     }
 
-<<<<<<< HEAD
-    const ticket = new SupportTicket({
-=======
     const ticket = await SupportTicket.create({
->>>>>>> 0338fc4 (Initial commit - updated backend)
       customer: customerId,
       connection: connection._id,
       description,
@@ -345,18 +284,6 @@ export const internalCreateTicket = async (req, res) => {
       createdByModel: internalUserRole,
     });
 
-<<<<<<< HEAD
-    await ticket.save();
-
-    const populatedTicket = await SupportTicket.findById(ticket._id)
-      .populate('customer')
-      .populate('assignedTo')
-      .populate('connection');
-
-    const io = getIo();
-    io.emit('ticketCreated', { ticket: populatedTicket });
-    return res.status(201).json(populatedTicket);
-=======
     const populatedTicket = await SupportTicket.findById(ticket._id).populate(
       'customer assignedTo connection'
     );
@@ -375,7 +302,6 @@ export const internalCreateTicket = async (req, res) => {
     });
 
     res.status(201).json(populatedTicket);
->>>>>>> 0338fc4 (Initial commit - updated backend)
   } catch (err) {
     console.error('Internal ticket creation failed:', err);
     res
@@ -384,12 +310,9 @@ export const internalCreateTicket = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
-=======
 /**
  * get tickets
  */
->>>>>>> 0338fc4 (Initial commit - updated backend)
 export const getTickets = async (req, res) => {
   try {
     const filters = {};
@@ -418,21 +341,6 @@ export const getTickets = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
-export const getTicketById = async (req, res) => {
-  try {
-    const ticket = await SupportTicket.findById(req.params.id)
-      .populate('customer')
-      .populate('assignedTo')
-      .populate({
-        path: 'publicComments',
-        populate: 'commentBy',
-      })
-      .populate({
-        path: 'privateComments',
-        populate: 'commentBy',
-      })
-=======
 /**
  * get  ticket details
  */
@@ -443,13 +351,10 @@ export const getTicketById = async (req, res) => {
     const ticket = await SupportTicket.findById(req.params.id)
       .populate('customer')
       .populate('assignedTo')
->>>>>>> 0338fc4 (Initial commit - updated backend)
       .populate('connection')
       .populate('createdBy')
       .populate('updatedBy')
       .populate('resolvedBy');
-<<<<<<< HEAD
-=======
     // .populate({
     //   path: 'publicComments',
     //   populate: 'commentBy',
@@ -458,7 +363,6 @@ export const getTicketById = async (req, res) => {
     //   path: 'privateComments',
     //   populate: 'commentBy',
     // });
->>>>>>> 0338fc4 (Initial commit - updated backend)
 
     if (!ticket) return res.status(404).json({ message: 'Ticket not found' });
 
@@ -471,19 +375,12 @@ export const getTicketById = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
-export const updateTicket = async (req, res) => {
-  try {
-    const { description, priority, issueType, status } = req.body;
-
-=======
 /**
  * Update ticket
  */
 export const updateTicket = async (req, res) => {
   try {
     const { description, priority, issueType, status } = req.body;
->>>>>>> 0338fc4 (Initial commit - updated backend)
     const ticket = await SupportTicket.findById(req.params.id);
     if (!ticket) return res.status(404).json({ message: 'Ticket not found' });
 
@@ -493,41 +390,6 @@ export const updateTicket = async (req, res) => {
     if (issueType !== undefined) updatedFields.issueType = issueType;
     if (status !== undefined) updatedFields.status = status;
 
-<<<<<<< HEAD
-    if (Object.keys(updatedFields).length > 0) {
-      Object.assign(ticket, updatedFields);
-      ticket.updatedBy = req.user._id;
-      ticket.updatedByModel = req.user.userType;
-      ticket.updatedAt = new Date();
-      await ticket.save();
-
-      const populatedTicket = await SupportTicket.findById(ticket._id).populate(
-        [
-          'customer',
-          'connection',
-          'assignedTo',
-          'createdBy',
-          'updatedBy',
-          'resolvedBy',
-        ]
-      );
-
-      const io = getIo();
-      io.to(ticket._id.toString()).emit('ticketUpdated', {
-        ticket: populatedTicket,
-      });
-    }
-
-    res.status(200).json(ticket);
-  } catch (error) {
-    console.error('Update Ticket Error:', error);
-    res
-      .status(500)
-      .json({ message: 'Failed to update ticket', error: error.message });
-  }
-};
-
-=======
     Object.assign(ticket, updatedFields);
     ticket.updatedBy = req.user._id;
     ticket.updatedByModel = req.user.userType;
@@ -604,7 +466,6 @@ export const updateTicketnew = async (req, res) => {
 /**
  * delete ticket
  */
->>>>>>> 0338fc4 (Initial commit - updated backend)
 export const deleteTicket = async (req, res) => {
   try {
     const ticketId = req.params.id;
@@ -622,12 +483,9 @@ export const deleteTicket = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
-=======
 /**
  * Assign ticket
  */
->>>>>>> 0338fc4 (Initial commit - updated backend)
 export const assignTicket = async (req, res) => {
   try {
     const { newAssignedTo, newAssignedToModel, note } = req.body;
@@ -658,15 +516,6 @@ export const assignTicket = async (req, res) => {
       'updatedBy',
     ]);
 
-<<<<<<< HEAD
-    const io = getIo();
-    io.to(ticket._id.toString()).emit('ticketAssigned', {
-      ticket: populatedTicket,
-    });
-    res.json(populatedTicket);
-  } catch (err) {
-    console.error('Error in assignTicket:', err);
-=======
     await handleSocketAndNotification({
       event: 'ticketAssigned',
       ticket: populatedTicket,
@@ -681,19 +530,15 @@ export const assignTicket = async (req, res) => {
     res.status(200).json(populatedTicket);
   } catch (err) {
     console.error('Assign Ticket Error:', err);
->>>>>>> 0338fc4 (Initial commit - updated backend)
     res
       .status(500)
       .json({ message: 'Failed to reassign ticket', error: err.message });
   }
 };
 
-<<<<<<< HEAD
-=======
 /**
  * Escalate ticket
  */
->>>>>>> 0338fc4 (Initial commit - updated backend)
 export const escalateTicket = async (req, res) => {
   try {
     const ticket = await SupportTicket.findById(req.params.id);
@@ -702,11 +547,7 @@ export const escalateTicket = async (req, res) => {
     ticket.escalated = true;
     ticket.status = 'escalated';
     ticket.updatedBy = req.user._id;
-<<<<<<< HEAD
-    ticket.updatedByModel = req.user.role;
-=======
     ticket.updatedByModel = req.user.userType;
->>>>>>> 0338fc4 (Initial commit - updated backend)
     ticket.updatedAt = new Date();
 
     await ticket.save();
@@ -719,21 +560,6 @@ export const escalateTicket = async (req, res) => {
       'updatedBy',
     ]);
 
-<<<<<<< HEAD
-    const io = getIo();
-    io.to(ticket._id.toString()).emit('ticketEscalated', {
-      ticket: populatedTicket,
-    });
-    res.status(200).json(populatedTicket);
-  } catch (error) {
-    console.error('Escalate Ticket Error:', error);
-    res
-      .status(500)
-      .json({ message: 'Failed to escalate ticket', error: error.message });
-  }
-};
-
-=======
     await handleSocketAndNotification({
       event: 'ticketEscalated',
       ticket: populatedTicket,
@@ -757,15 +583,10 @@ export const escalateTicket = async (req, res) => {
 /**
  * Resolve ticket
  */
->>>>>>> 0338fc4 (Initial commit - updated backend)
 export const resolveTicket = async (req, res) => {
   try {
     const { resolutionMessage } = req.body;
     const ticket = await SupportTicket.findById(req.params.id);
-<<<<<<< HEAD
-
-=======
->>>>>>> 0338fc4 (Initial commit - updated backend)
     if (!ticket) return res.status(404).json({ message: 'Ticket not found' });
 
     ticket.status = 'resolved';
@@ -788,21 +609,6 @@ export const resolveTicket = async (req, res) => {
       'resolvedBy',
     ]);
 
-<<<<<<< HEAD
-    const io = getIo();
-    io.to(ticket._id.toString()).emit('ticketResolved', {
-      ticket: populatedTicket,
-    });
-    res.status(200).json(populatedTicket);
-  } catch (error) {
-    console.error('Resolve Ticket Error:', error);
-    res
-      .status(500)
-      .json({ message: 'Failed to resolve ticket', error: error.message });
-  }
-};
-
-=======
     await handleSocketAndNotification({
       event: 'ticketResolved',
       ticket: populatedTicket,
@@ -826,7 +632,6 @@ export const resolveTicket = async (req, res) => {
 /**
  * getRecentTickets
  */
->>>>>>> 0338fc4 (Initial commit - updated backend)
 export const getRecentTickets = async (req, res) => {
   try {
     const recentTickets = await SupportTicket.find({})
@@ -846,13 +651,10 @@ export const getRecentTickets = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
-=======
 /**
  * bulk Ticket Updating
  */
 
->>>>>>> 0338fc4 (Initial commit - updated backend)
 export const bulkUpdateTickets = async (req, res) => {
   try {
     const { ticketIds, status, priority } = req.body;
@@ -878,38 +680,6 @@ export const bulkUpdateTickets = async (req, res) => {
     res.status(200).json({ message: 'Tickets updated successfully', tickets });
   } catch (error) {
     console.error('Bulk Update Tickets Error:', error);
-<<<<<<< HEAD
-    res
-      .status(500)
-      .json({
-        message: 'Failed to update tickets in bulk',
-        error: error.message,
-      });
-  }
-};
-
-export const addPublicComment = async (req, res) => {
-  try {
-    const { ticketId } = req.params;
-    const { content } = req.body;
-    const userId = req.user._id;
-    const userModel = req.user.userType;
-
-    if (!userId || !userModel) {
-      return res
-        .status(403)
-        .json({ message: 'Unauthorized to add a comment.' });
-    }
-
-    const newComment = new Comment({
-      content,
-      commentBy: userId,
-      commentByModel: userModel,
-    });
-
-    await newComment.save();
-
-=======
     res.status(500).json({
       message: 'Failed to update tickets in bulk',
       error: error.message,
@@ -931,30 +701,12 @@ export const addPublicComment2 = async (req, res) => {
       commentByModel: req.user.userType,
     });
 
->>>>>>> 0338fc4 (Initial commit - updated backend)
     const ticket = await SupportTicket.findByIdAndUpdate(
       ticketId,
       { $push: { publicComments: newComment._id } },
       { new: true }
     ).populate([{ path: 'publicComments', populate: { path: 'commentBy' } }]);
 
-<<<<<<< HEAD
-    if (!ticket) {
-      return res.status(404).json({ message: 'Ticket not found.' });
-    }
-
-    const io = getIo();
-    io.to(ticketId).emit('ticketPublicCommentAdded', { ticket, newComment });
-    res.status(201).json(newComment);
-  } catch (error) {
-    console.log('Error in addPublicComment:', error.message);
-    res
-      .status(500)
-      .json({ message: 'Error adding public comment.', error: error.message });
-  }
-};
-
-=======
     const populatedNewComment = await Comment.findById(newComment._id).populate(
       {
         path: 'commentBy',
@@ -1113,17 +865,13 @@ export const addCommentnew = async (req, res) => {
  * get public comment
  */
 
->>>>>>> 0338fc4 (Initial commit - updated backend)
 export const getPublicComments = async (req, res) => {
   try {
     const { ticketId } = req.params;
     const ticket = await SupportTicket.findById(ticketId).populate({
       path: 'publicComments',
       model: 'Comment',
-<<<<<<< HEAD
-=======
       // options: { sort: { createdAt: -1 } },
->>>>>>> 0338fc4 (Initial commit - updated backend)
       populate: {
         path: 'commentBy',
         select: 'firstName lastName userType',
@@ -1133,11 +881,8 @@ export const getPublicComments = async (req, res) => {
     if (!ticket) {
       return res.status(404).json({ message: 'Ticket not found.' });
     }
-<<<<<<< HEAD
-=======
 
     // console.log(ticket.publicComments)
->>>>>>> 0338fc4 (Initial commit - updated backend)
     res.status(200).json(ticket.publicComments);
   } catch (error) {
     res.status(500).json({
@@ -1147,35 +892,13 @@ export const getPublicComments = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
-=======
 /**
  * Add private comment
  */
->>>>>>> 0338fc4 (Initial commit - updated backend)
 export const addPrivateComment = async (req, res) => {
   try {
     const { ticketId } = req.params;
     const { content } = req.body;
-<<<<<<< HEAD
-    const userId = req.user._id;
-    const userModel = req.user.userType;
-
-    if (!userId || !userModel) {
-      return res
-        .status(403)
-        .json({ message: 'Unauthorized to add a private note.' });
-    }
-
-    const newComment = new Comment({
-      content,
-      commentBy: userId,
-      commentByModel: userModel,
-    });
-
-    await newComment.save();
-
-=======
 
     const newComment = await Comment.create({
       content,
@@ -1183,30 +906,12 @@ export const addPrivateComment = async (req, res) => {
       commentByModel: req.user.userType,
     });
 
->>>>>>> 0338fc4 (Initial commit - updated backend)
     const ticket = await SupportTicket.findByIdAndUpdate(
       ticketId,
       { $push: { privateComments: newComment._id } },
       { new: true }
     ).populate([{ path: 'privateComments', populate: { path: 'commentBy' } }]);
 
-<<<<<<< HEAD
-    if (!ticket) {
-      return res.status(404).json({ message: 'Ticket not found.' });
-    }
-
-    const io = getIo();
-    io.to(ticketId).emit('ticketPrivateCommentAdded', { ticket, newComment });
-    res.status(201).json(newComment);
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error adding private comment.',
-      error: error.message,
-    });
-  }
-};
-
-=======
     const io = getIo();
     io.to(ticketId).emit('ticketPrivateCommentAdded', {
       newComment,
@@ -1236,7 +941,6 @@ export const addPrivateComment = async (req, res) => {
 /**
  * get private comment
  */
->>>>>>> 0338fc4 (Initial commit - updated backend)
 export const getPrivateComments = async (req, res) => {
   try {
     const { ticketId } = req.params;
@@ -1261,34 +965,14 @@ export const getPrivateComments = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
-const createAttachment = async (file) => {
-  const newAttachment = new Attachment({
-    name: file.originalname,
-    src: path.join('/uploads', file.filename),
-    type: file.mimetype,
-    size: file.size,
-  });
-  return await newAttachment.save();
-};
-
-=======
 /**
  * Add attachment to ticket
  */
->>>>>>> 0338fc4 (Initial commit - updated backend)
 export const addAttachmentToTicket = async (req, res) => {
   try {
     const { ticketId } = req.params;
     const file = req.file;
 
-<<<<<<< HEAD
-    if (!file) {
-      return res.status(400).json({ message: 'No file provided.' });
-    }
-
-    const newAttachment = await createAttachment(file);
-=======
     if (!file) return res.status(400).json({ message: 'No file provided' });
 
     const newAttachment = await Attachment.create({
@@ -1297,7 +981,6 @@ export const addAttachmentToTicket = async (req, res) => {
       type: file.mimetype,
       size: file.size,
     });
->>>>>>> 0338fc4 (Initial commit - updated backend)
 
     const ticket = await SupportTicket.findByIdAndUpdate(
       ticketId,
@@ -1310,15 +993,6 @@ export const addAttachmentToTicket = async (req, res) => {
     }
 
     const io = getIo();
-<<<<<<< HEAD
-    io.to(ticketId).emit('ticketAttachmentAdded', { ticket, newAttachment });
-    res.status(201).json(newAttachment);
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error adding attachment to ticket.',
-      error: error.message,
-    });
-=======
     io.to(ticketId).emit('ticketAttachmentAdded', {
       ticket,
       newAttachment,
@@ -1342,7 +1016,6 @@ export const addAttachmentToTicket = async (req, res) => {
     res
       .status(500)
       .json({ message: 'Failed to add attachment', error: err.message });
->>>>>>> 0338fc4 (Initial commit - updated backend)
   }
 };
 
@@ -1388,8 +1061,6 @@ export const addAttachmentToComment = async (req, res) => {
     });
   }
 };
-<<<<<<< HEAD
-=======
 
 export const getTicketforUser = async (req, res) => {
   // console.log('getTicketforUser hit');
@@ -1436,4 +1107,3 @@ export const getTicketforUser = async (req, res) => {
     });
   }
 };
->>>>>>> 0338fc4 (Initial commit - updated backend)

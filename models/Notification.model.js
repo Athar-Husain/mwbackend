@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-import { Schema, model } from "mongoose";
-
-const notificationSchema = new Schema({
-  title: { type: String, required: true },
-  message: { type: String, required: true },
-  recipient: { type: Schema.Types.ObjectId, refPath: "onModel" },
-  onModel: { type: String, enum: ["Customer", "Team", "Admin"] },
-  isRead: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now },
-});
-
-export default model("Notification", notificationSchema);
-=======
 import { Schema, model } from 'mongoose';
 // import Customer from './Customer.js'; // Adjust path as per your project
 // import { getIo } from './socket.js'; // Adjust path as needed
@@ -50,4 +36,3 @@ const notificationSchema = new Schema(
 const Notification = model('Notification', notificationSchema);
 
 export default Notification;
->>>>>>> 0338fc4 (Initial commit - updated backend)

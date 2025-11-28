@@ -10,10 +10,7 @@ const adminSchema = new Schema({
   userType: { type: String, default: 'Admin' },
   role: { type: String, default: 'admin' },
   createdAt: { type: Date, default: Date.now },
-<<<<<<< HEAD
-=======
   fcmTokens: [{ type: String }], // Stores multiple device tokens
->>>>>>> 0338fc4 (Initial commit - updated backend)
 });
 
 adminSchema.pre('save', async function (next) {

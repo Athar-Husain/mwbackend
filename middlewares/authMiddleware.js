@@ -60,11 +60,7 @@ export const CustomerProtect = asyncHandler(async (req, res, next) => {
       return res.status(401).json({ message: 'Customer not found' });
     }
 
-<<<<<<< HEAD
-    if (customer.userType !== 'customer') {
-=======
     if (customer.userType !== 'Customer') {
->>>>>>> 0338fc4 (Initial commit - updated backend)
       return res.status(403).json({ message: 'Access denied: Not a customer' });
     }
 

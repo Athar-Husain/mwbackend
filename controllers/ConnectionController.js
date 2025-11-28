@@ -1,18 +1,11 @@
 import Connection from '../models/Connection.model.js';
 import Customer from '../models/Customer.model.js';
-<<<<<<< HEAD
-=======
 import asyncHandler from 'express-async-handler';
 // import Connection from '../models/Connection.model.js';
->>>>>>> 0338fc4 (Initial commit - updated backend)
 import SubscribedPlan from '../models/SubscribedPlan.model.js';
 import Plan from '../models/Plan.model.js';
 
 // Create a new connection
-<<<<<<< HEAD
-export const createConnection = async (req, res) => {
-  // console.log('createConnection req.body', req.body);
-=======
 // export const createConnection = async (req, res) => {
 //   // console.log('createConnection req.body', req.body);
 //   try {
@@ -66,16 +59,11 @@ export const createConnection = async (req, res) => {
 // };
 
 export const createConnection = async (req, res) => {
->>>>>>> 0338fc4 (Initial commit - updated backend)
   try {
     const {
       boxId,
       userName,
       customerId,
-<<<<<<< HEAD
-      // region,
-=======
->>>>>>> 0338fc4 (Initial commit - updated backend)
       userId,
       contactNo,
       connectionType,
@@ -84,11 +72,7 @@ export const createConnection = async (req, res) => {
       serviceArea,
     } = req.body;
 
-<<<<<<< HEAD
-    // console.log('Request Body:', customer);
-=======
     console.log('req body in connection', req.body);
->>>>>>> 0338fc4 (Initial commit - updated backend)
 
     // Validate that the customer exists
     const customerExists = await Customer.findById(customerId);
@@ -96,18 +80,11 @@ export const createConnection = async (req, res) => {
       return res.status(404).json({ message: 'Customer not found' });
     }
 
-<<<<<<< HEAD
-=======
     // Create a new connection
->>>>>>> 0338fc4 (Initial commit - updated backend)
     const connection = new Connection({
       boxId,
       userName,
       customerId,
-<<<<<<< HEAD
-      // region,
-=======
->>>>>>> 0338fc4 (Initial commit - updated backend)
       userId,
       contactNo,
       connectionType,
@@ -117,12 +94,6 @@ export const createConnection = async (req, res) => {
       isActive: true, // default to true on create
     });
 
-<<<<<<< HEAD
-    await connection.save();
-    res
-      .status(201)
-      .json({ message: 'Connection created successfully', connection });
-=======
     const savedConnection = await connection.save();
 
     // Add the connection to the customer's connections array
@@ -138,7 +109,6 @@ export const createConnection = async (req, res) => {
       message: 'Connection created successfully',
       connection: savedConnection,
     });
->>>>>>> 0338fc4 (Initial commit - updated backend)
   } catch (error) {
     console.error(error);
     res
@@ -150,19 +120,11 @@ export const createConnection = async (req, res) => {
 // Get all connections
 export const getAllConnections = async (req, res) => {
   try {
-<<<<<<< HEAD
-    const connections = await Connection.find()
-      // .populate('customer')
-      // .populate('activePlan')
-      // .populate('serviceArea')
-      // .populate('agent');
-=======
     const connections = await Connection.find();
     // .populate('customer')
     // .populate('activePlan')
     // .populate('serviceArea')
     // .populate('agent');
->>>>>>> 0338fc4 (Initial commit - updated backend)
 
     res.status(200).json(connections);
   } catch (error) {
@@ -414,8 +376,6 @@ export const getSubscribedPlans = async (req, res) => {
     });
   }
 };
-<<<<<<< HEAD
-=======
 
 export const getConnectionsForUser = async (req, res) => {
   try {
@@ -510,4 +470,3 @@ export const getActiveConnetionForUserold = asyncHandler(async (req, res) => {
     });
   }
 });
->>>>>>> 0338fc4 (Initial commit - updated backend)

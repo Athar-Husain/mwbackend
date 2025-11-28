@@ -1,23 +1,3 @@
-<<<<<<< HEAD
-// sockets/ticketSocket.js
-export default (io, socket) => {
-  /**
-   * @description A client joins a specific ticket room to receive real-time updates for that ticket.
-   * @param {string} ticketId - The ID of the ticket to join.
-   */
-  socket.on('joinTicketRoom', (ticketId) => {
-    socket.join(ticketId);
-    console.log(`Socket ${socket.id} joined room for ticket ${ticketId}`);
-  });
-
-  /**
-   * @description A client leaves a ticket room.
-   * @param {string} ticketId - The ID of the ticket to leave.
-   */
-  socket.on('leaveTicketRoom', (ticketId) => {
-    socket.leave(ticketId);
-    console.log(`Socket ${socket.id} left room for ticket ${ticketId}`);
-=======
 // socket/ticketSocket.js
 import SupportTicket from '../models/SupportTicket.model.js';
 import Comment from '../models/Comment.model.js';
@@ -130,6 +110,5 @@ export default (io, socket) => {
     } catch (err) {
       console.error('Ticket Socket Comment Error:', err);
     }
->>>>>>> 0338fc4 (Initial commit - updated backend)
   });
 };

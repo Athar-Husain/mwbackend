@@ -8,11 +8,7 @@ const customerSchema = new Schema({
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true },
   phone: { type: String, required: true },
-<<<<<<< HEAD
-  userType: { type: String, default: 'customer' },
-=======
   userType: { type: String, default: 'Customer' },
->>>>>>> 0338fc4 (Initial commit - updated backend)
   role: { type: String, default: 'customer' },
   activeConnection: { type: Schema.Types.ObjectId, ref: 'Connection' },
 
@@ -21,10 +17,7 @@ const customerSchema = new Schema({
   // supportTickets: [{ type: Schema.Types.ObjectId, ref: "SupportTicket" }],
   // paymentHistory: [{ type: Schema.Types.ObjectId, ref: "Payment" }],
   createdAt: { type: Date, default: Date.now },
-<<<<<<< HEAD
-=======
   fcmTokens: [{ type: String }], // Stores multiple device tokens
->>>>>>> 0338fc4 (Initial commit - updated backend)
 });
 
 customerSchema.pre('save', async function (next) {

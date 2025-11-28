@@ -16,10 +16,6 @@ import {
   getPublicComments,
   addPrivateComment,
   getPrivateComments,
-<<<<<<< HEAD
-} from '../controllers/supportTicketController.js';
-import { AdminProtect, commonProtect } from '../middlewares/authMiddleware.js';
-=======
   getTicketforUser,
 } from '../controllers/supportTicketController.js';
 import {
@@ -27,7 +23,6 @@ import {
   commonProtect,
   CustomerProtect,
 } from '../middlewares/authMiddleware.js';
->>>>>>> 0338fc4 (Initial commit - updated backend)
 
 // import { authenticateUser } from '../middlewares/auth.middleware.js'; // Adjust if needed
 
@@ -37,13 +32,10 @@ const router = express.Router();
 // Ticket Routes
 // =======================
 
-<<<<<<< HEAD
-=======
 // router.get('/mytickets', getTicketforUser);
 router.get('/getTicketById/:id', getTicketById);
 router.get('/mytickets', CustomerProtect, getTicketforUser);
 
->>>>>>> 0338fc4 (Initial commit - updated backend)
 // ✅ Create ticket - Customer only
 router.post('/', createTicket);
 
