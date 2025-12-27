@@ -102,14 +102,14 @@ export const sendFCMNotificationold2 = async ({
     // ✅ For modern SDK (v11+)
     if (admin.messaging.sendEachForMulticast) {
       const response = await admin.messaging.sendEachForMulticast(fcmMessage);
-      console.log(`✅ FCM sent to ${response.successCount} devices`);
+      // console.log(`✅ FCM sent to ${response.successCount} devices`);
       return response;
     }
 
     // ✅ Fallback for legacy SDK
     if (typeof admin.messaging === 'function') {
       const response = await admin.messaging().sendMulticast(fcmMessage);
-      console.log(`✅ FCM sent to ${response.successCount} devices`);
+      // console.log(`✅ FCM sent to ${response.successCount} devices`);
       return response;
     }
 
@@ -126,17 +126,17 @@ export const sendFCMNotification3 = async ({
   payload = {},
 }) => {
   try {
-    console.log('\n============================');
-    console.log('🚀 [sendFCMNotification] Triggered');
-    console.log('📩 Title:', title);
-    console.log('📨 Message:', message);
-    console.log(
-      '🎯 Tokens received:',
-      tokens && tokens.length ? tokens.length : 0
-    );
-    console.log('🧾 Tokens list:', tokens);
-    console.log('📦 Payload:', payload);
-    console.log('============================\n');
+    // console.log('\n============================');
+    // console.log('🚀 [sendFCMNotification] Triggered');
+    // console.log('📩 Title:', title);
+    // console.log('📨 Message:', message);
+    // console.log(
+    //   '🎯 Tokens received:',
+    //   tokens && tokens.length ? tokens.length : 0
+    // );
+    // console.log('🧾 Tokens list:', tokens);
+    // console.log('📦 Payload:', payload);
+    // console.log('============================\n');
 
     if (!tokens || tokens.length === 0) {
       console.log('⚠️ No FCM tokens provided — skipping notification.');
@@ -156,30 +156,30 @@ export const sendFCMNotification3 = async ({
       tokens,
     };
 
-    console.log(
-      '🧠 Final FCM Message Object:',
-      JSON.stringify(fcmMessage, null, 2)
-    );
+    // console.log(
+    //   '🧠 Final FCM Message Object:',
+    //   JSON.stringify(fcmMessage, null, 2)
+    // );
 
     // Modern Firebase Admin SDK (v11+)
     if (admin.messaging.sendEachForMulticast) {
-      console.log('📡 Using: admin.messaging.sendEachForMulticast()');
+      // console.log('📡 Using: admin.messaging.sendEachForMulticast()');
       const response = await admin.messaging.sendEachForMulticast(fcmMessage);
-      console.log(
-        `✅ FCM sent successfully to ${response.successCount} devices`
-      );
-      console.log('📊 FCM Response:', JSON.stringify(response, null, 2));
+      // console.log(
+      //   `✅ FCM sent successfully to ${response.successCount} devices`
+      // );
+      // console.log('📊 FCM Response:', JSON.stringify(response, null, 2));
       return response;
     }
 
     // Legacy SDK support
     if (typeof admin.messaging === 'function') {
-      console.log('📡 Using: admin.messaging().sendMulticast()');
+      // console.log('📡 Using: admin.messaging().sendMulticast()');
       const response = await admin.messaging().sendMulticast(fcmMessage);
-      console.log(
-        `✅ FCM sent successfully to ${response.successCount} devices`
-      );
-      console.log('📊 FCM Response:', JSON.stringify(response, null, 2));
+      // console.log(
+      //   `✅ FCM sent successfully to ${response.successCount} devices`
+      // );
+      // console.log('📊 FCM Response:', JSON.stringify(response, null, 2));
       return response;
     }
 
@@ -198,18 +198,18 @@ export const sendFCMNotification4 = async ({
   tokens,
   payload = {},
 }) => {
-  console.log('============================')
-  console.log('🚀 [sendFCMNotification] Triggered')
-  console.log('📩 Title:', title)
-  console.log('📨 Message:', message)
-  console.log('🎯 Tokens received:', tokens?.length || 0)
-  console.log('🧾 Tokens list:', tokens)
-  console.log('📦 Payload:', payload)
-  console.log('============================')
+  console.log('============================');
+  console.log('🚀 [sendFCMNotification] Triggered');
+  console.log('📩 Title:', title);
+  console.log('📨 Message:', message);
+  console.log('🎯 Tokens received:', tokens?.length || 0);
+  console.log('🧾 Tokens list:', tokens);
+  console.log('📦 Payload:', payload);
+  console.log('============================');
 
   if (!tokens || tokens.length === 0) {
-    console.warn('⚠️ No FCM tokens provided — skipping notification.')
-    return
+    console.warn('⚠️ No FCM tokens provided — skipping notification.');
+    return;
   }
 
   try {
@@ -219,43 +219,49 @@ export const sendFCMNotification4 = async ({
         body: message,
       },
       data: Object.entries(payload).reduce((acc, [k, v]) => {
-        acc[k] = String(v)
-        return acc
+        acc[k] = String(v);
+        return acc;
       }, {}),
       tokens,
-    }
+    };
 
-    console.log('🧠 Final FCM Message Object:', JSON.stringify(fcmMessage, null, 2))
+    console.log(
+      '🧠 Final FCM Message Object:',
+      JSON.stringify(fcmMessage, null, 2)
+    );
 
-    let response
+    let response;
 
     // ✅ Detect modern SDK (v11+)
     if (typeof admin.messaging.sendEachForMulticast === 'function') {
-      console.log('📡 Using: admin.messaging.sendEachForMulticast()')
-      response = await admin.messaging.sendEachForMulticast(fcmMessage)
+      console.log('📡 Using: admin.messaging.sendEachForMulticast()');
+      response = await admin.messaging.sendEachForMulticast(fcmMessage);
     }
     // ✅ Legacy SDK fallback
     else if (typeof admin.messaging === 'function') {
-      console.log('📡 Using: admin.messaging().sendMulticast()')
-      const messagingInstance = admin.messaging()
+      console.log('📡 Using: admin.messaging().sendMulticast()');
+      const messagingInstance = admin.messaging();
       if (typeof messagingInstance.sendMulticast === 'function') {
-        response = await messagingInstance.sendMulticast(fcmMessage)
+        response = await messagingInstance.sendMulticast(fcmMessage);
       } else {
-        throw new Error('sendMulticast() not available in this SDK version')
+        throw new Error('sendMulticast() not available in this SDK version');
       }
     } else {
-      throw new Error('Invalid Firebase Admin SDK configuration')
+      throw new Error('Invalid Firebase Admin SDK configuration');
     }
 
-    console.log(`✅ FCM sent to ${response.successCount} devices`)
+    console.log(`✅ FCM sent to ${response.successCount} devices`);
     if (response.failureCount > 0) {
-      console.warn('⚠️ FCM failures:', response.responses.filter(r => !r.success))
+      console.warn(
+        '⚠️ FCM failures:',
+        response.responses.filter((r) => !r.success)
+      );
     }
-    return response
+    return response;
   } catch (error) {
-    console.error('❌ [ERROR]: FCM send failed', error)
+    console.error('❌ [ERROR]: FCM send failed', error);
   }
-}
+};
 
 export const sendFCMNotification = async ({
   title,
@@ -264,19 +270,19 @@ export const sendFCMNotification = async ({
   payload = {},
 }) => {
   if (!tokens || tokens.length === 0) {
-    console.log("⚠️ No tokens provided — skipping FCM send");
+    console.log('⚠️ No tokens provided — skipping FCM send');
     return;
   }
 
   try {
-    console.log("============================");
-    console.log("🚀 [sendFCMNotification] Triggered");
-    console.log("📩 Title:", title);
-    console.log("📨 Message:", message);
-    console.log("🎯 Tokens received:", tokens.length);
-    console.log("🧾 Tokens list:", JSON.stringify(tokens, null, 2));
-    console.log("📦 Payload:", payload);
-    console.log("============================");
+    // console.log("============================");
+    // console.log("🚀 [sendFCMNotification] Triggered");
+    // console.log("📩 Title:", title);
+    // console.log("📨 Message:", message);
+    // console.log("🎯 Tokens received:", tokens.length);
+    // console.log("🧾 Tokens list:", JSON.stringify(tokens, null, 2));
+    // console.log("📦 Payload:", payload);
+    // console.log("============================");
 
     const fcmMessage = {
       notification: { title, body: message },
@@ -287,39 +293,48 @@ export const sendFCMNotification = async ({
       tokens,
     };
 
-    console.log("🧠 Final FCM Message Object:", JSON.stringify(fcmMessage, null, 2));
+    // console.log("🧠 Final FCM Message Object:", JSON.stringify(fcmMessage, null, 2));
 
     // ✅ Check the SDK structure
     const messaging = admin.messaging?.() || admin.messaging;
     if (!messaging) {
-      throw new Error("Firebase Admin messaging service not initialized properly");
+      throw new Error(
+        'Firebase Admin messaging service not initialized properly'
+      );
     }
 
     // ✅ For modern SDK (v11+)
-    if (typeof messaging.sendEachForMulticast === "function") {
-      console.log("📡 Using: sendEachForMulticast()");
+    if (typeof messaging.sendEachForMulticast === 'function') {
+      // console.log("📡 Using: sendEachForMulticast()");
       const response = await messaging.sendEachForMulticast(fcmMessage);
-      console.log(`✅ FCM sent to ${response.successCount} devices`);
+      // console.log(`✅ FCM sent to ${response.successCount} devices`);
       if (response.failureCount > 0) {
-        console.warn("⚠️ Some tokens failed:", response.responses.filter(r => !r.success));
+        console.warn(
+          '⚠️ Some tokens failed:',
+          response.responses.filter((r) => !r.success)
+        );
       }
       return response;
     }
 
     // ✅ For older SDK (v10 or earlier)
-    if (typeof messaging.sendMulticast === "function") {
-      console.log("📡 Using: sendMulticast()");
+    if (typeof messaging.sendMulticast === 'function') {
+      // console.log("📡 Using: sendMulticast()");
       const response = await messaging.sendMulticast(fcmMessage);
-      console.log(`✅ FCM sent to ${response.successCount} devices`);
+      // console.log(`✅ FCM sent to ${response.successCount} devices`);
       if (response.failureCount > 0) {
-        console.warn("⚠️ Some tokens failed:", response.responses.filter(r => !r.success));
+        console.warn(
+          '⚠️ Some tokens failed:',
+          response.responses.filter((r) => !r.success)
+        );
       }
       return response;
     }
 
-    throw new Error("sendMulticast() or sendEachForMulticast() not available in this SDK version");
-
+    throw new Error(
+      'sendMulticast() or sendEachForMulticast() not available in this SDK version'
+    );
   } catch (error) {
-    console.error("❌ [ERROR]: FCM send failed", error);
+    console.error('❌ [ERROR]: FCM send failed', error);
   }
 };

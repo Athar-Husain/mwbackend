@@ -2,11 +2,12 @@
 import path from 'path';
 import SupportTicket from '../models/SupportTicket.model.js';
 import Customer from '../models/Customer.model.js';
+import Connection from '../models/Connection.model.js';
+// import Connection from '../models/Connection.model.js';
 import Team from '../models/Team.model.js';
 import Admin from '../models/Admin.model.js';
 import Comment from '../models/Comment.model.js';
 import Attachment from '../models/Attachment.model.js';
-import Connection from '../models/Connection.model.js';
 import { getIo } from '../config/socket.js';
 import Notification from '../models/Notification.model.js';
 import { sendFCMNotification } from '../utils/fcmService.js';
@@ -345,16 +346,46 @@ export const getTickets = async (req, res) => {
  * get  ticket details
  */
 
-export const getTicketById = async (req, res) => {
+export const getTicketByIdOld = async (req, res) => {
   try {
-    console.log('getTicketById');
+    // console.log('getTicketById');
     const ticket = await SupportTicket.findById(req.params.id)
-      .populate('customer')
-      .populate('assignedTo')
+      // .populate('customer')
+      .select('-publicComments -privateComments')
+      .populate({
+        path: 'customer',
+        select: '-password -fcmTokens -__v',
+      })
+      // .populate('createdBy')
+      .populate({
+        path: 'createdBy',
+        select: '-password -fcmTokens -__v',
+      })
+      // .populate('updatedBy')
+      .populate({
+        path: 'updatedBy',
+        select: '-password -fcmTokens -__v',
+      })
+      // .populate('resolvedBy')
+      .populate({
+        path: 'resolvedBy',
+        select: '-password -fcmTokens -__v',
+      })
+      .populate({
+        path: 'assignedTo',
+        select: '-password -fcmTokens -__v',
+      })
+      // .populate('assignedTo')
       .populate('connection')
-      .populate('createdBy')
-      .populate('updatedBy')
-      .populate('resolvedBy');
+      // .populate('connection.serviceArea')
+      .populate({
+        path: 'connection',
+        populate: {
+          path: 'serviceArea',
+          model: 'ServiceArea',
+        },
+      });
+    // .populate('connection.serviceArea');
     // .populate({
     //   path: 'publicComments',
     //   populate: 'commentBy',
@@ -372,6 +403,53 @@ export const getTicketById = async (req, res) => {
     res
       .status(500)
       .json({ message: 'Failed to get ticket', error: error.message });
+  }
+};
+
+export const getTicketById = async (req, res) => {
+  try {
+    const ticket = await SupportTicket.findById(req.params.id)
+      .select('-publicComments -privateComments')
+
+      .populate({
+        path: 'customer',
+        select: '-password -fcmTokens -__v',
+      })
+      .populate({
+        path: 'createdBy',
+        select: '-password -fcmTokens -__v',
+      })
+      .populate({
+        path: 'updatedBy',
+        select: '-password -fcmTokens -__v',
+      })
+      .populate({
+        path: 'resolvedBy',
+        select: '-password -fcmTokens -__v',
+      })
+      .populate({
+        path: 'assignedTo',
+        select: '-password -fcmTokens -__v',
+      })
+      .populate({
+        path: 'connection',
+        populate: {
+          path: 'serviceArea',
+          model: 'ServiceArea',
+        },
+      });
+
+    if (!ticket) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+
+    res.status(200).json(ticket);
+  } catch (error) {
+    console.error('Get Ticket Error:', error);
+    res.status(500).json({
+      message: 'Failed to get ticket',
+      error: error.message,
+    });
   }
 };
 
@@ -586,6 +664,9 @@ export const escalateTicket = async (req, res) => {
 export const resolveTicket = async (req, res) => {
   try {
     const { resolutionMessage } = req.body;
+
+    console.log('resolutionMessage', resolutionMessage);
+    console.log('req.body', req.body);
     const ticket = await SupportTicket.findById(req.params.id);
     if (!ticket) return res.status(404).json({ message: 'Ticket not found' });
 
@@ -1071,6 +1152,8 @@ export const getTicketforUser = async (req, res) => {
         .status(401)
         .json({ message: 'Unauthorized: User not authenticated.' });
     }
+
+    // console.log('req.user', req.user);
 
     const customerId = req.user._id;
 

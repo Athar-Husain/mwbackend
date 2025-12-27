@@ -1,5 +1,5 @@
 export default function customerSocketHandlers(io, socket) {
-  console.log(`⚡ Customer socket initialized for ${socket.id}`);
+  // console.log(`⚡ Customer socket initialized for ${socket.id}`);
 
   // Join customer-specific room
   socket.on('joinCustomerRoom', (customerId) => {

@@ -72,7 +72,7 @@ export const getServiceAreaById = async (req, res) => {
 
 // 5. Update a Service Area
 export const updateServiceArea = async (req, res) => {
-  console.log('Update Service Area hit', req.body);
+  // console.log('Update Service Area hit', req.body);
   try {
     const { region, description, isActive, networkStatus } = req.body;
 

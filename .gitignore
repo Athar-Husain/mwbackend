@@ -28,6 +28,7 @@ temp/
 .cache/
 .next/
 out/
+backup/
 
 # Coverage directory used by tools like istanbul
 coverage/

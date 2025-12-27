@@ -37,7 +37,7 @@ router.get('/getTicketById/:id', getTicketById);
 router.get('/mytickets', CustomerProtect, getTicketforUser);
 
 // ✅ Create ticket - Customer only
-router.post('/', createTicket);
+router.post('/createTicket', CustomerProtect, createTicket);
 
 // ✅ Create ticket - Internal (Admin/Team)
 router.post('/internal', AdminProtect, internalCreateTicket);

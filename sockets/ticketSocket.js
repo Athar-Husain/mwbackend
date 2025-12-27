@@ -45,20 +45,20 @@ const notifyUsers = async ({ io, recipients, title, message, payload }) => {
  * Ticket Socket Handlers
  */
 export default (io, socket) => {
-  console.log(`⚡ Ticket socket initialized for ${socket.id}`);
+  // console.log(`⚡ Ticket socket initialized for ${socket.id}`);
 
   // Join ticket room
   socket.on('joinTicketRoom', (ticketId) => {
     if (!ticketId) return console.error('Invalid ticketId provided');
     socket.join(ticketId);
-    console.log(`Socket ${socket.id} joined ticket room ${ticketId}`);
+    // console.log(`Socket ${socket.id} joined ticket room ${ticketId}`);
   });
 
   // Leave ticket room
   socket.on('leaveTicketRoom', (ticketId) => {
     if (!ticketId) return console.error('Invalid ticketId provided');
     socket.leave(ticketId);
-    console.log(`Socket ${socket.id} left ticket room ${ticketId}`);
+    // console.log(`Socket ${socket.id} left ticket room ${ticketId}`);
   });
 
   // Real-time public comment (alternative to REST)

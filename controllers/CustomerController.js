@@ -644,6 +644,9 @@ export const switchActiveConnection = asyncHandler(async (req, res) => {
     .populate('activeConnection')
     .populate('connections');
 
+
+    console.log("updatedCustomer in switchactive connection", updatedCustomer)
+
   // 5. Respond with the updated customer profile.
   res.status(200).json({
     message: 'Active connection switched successfully',

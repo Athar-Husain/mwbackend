@@ -19,6 +19,7 @@ const app = express();
 // Allow multiple origins
 const allowedOrigins = [
   process.env.CLIENT_CUSTOMER_URL,
+  process.env.CLIENT_CUSTOMER_URL3,
   process.env.CLIENT_ADMIN_URL,
   process.env.CLIENT_TEAM_URL,
 ].filter(Boolean);

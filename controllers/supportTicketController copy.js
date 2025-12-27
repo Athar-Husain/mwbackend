@@ -421,7 +421,7 @@ export const assignTicket = async (req, res) => {
   try {
     const { newAssignedTo, newAssignedToModel, note } = req.body;
 
-    console.log('req body ni assignTicket', req.body);
+    // console.log('req body ni assignTicket', req.body);
 
     const ticket = await SupportTicket.findById(req.params.id);
     if (!ticket) return res.status(404).json({ message: 'Ticket not found' });
@@ -602,7 +602,7 @@ export const addPublicComment = async (req, res) => {
     const { ticketId } = req.params;
     const { content } = req.body;
 
-    console.log('req.user in addPublicComment', req.user);
+    // console.log('req.user in addPublicComment', req.user);
 
     let userId = req.user._id;
     let userModel = req.user.userType;

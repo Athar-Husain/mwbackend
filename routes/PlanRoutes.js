@@ -21,7 +21,10 @@ import {
   deletePlanCategory,
 } from '../controllers/PlanCategoryController.js';
 
-import { AdminProtect } from '../middlewares/authMiddleware.js';
+import {
+  AdminProtect,
+  CustomerProtect,
+} from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
@@ -45,7 +48,7 @@ router.get('/plans/search', getPlansByCriteria); // Search plans by criteria
 
 // ---------- Subscription Routes ----------
 router.post('/subscriptions', subscribeToPlan); // Subscribe to a plan
-router.get('/subscriptions/current', getCustomerCurrentPlan); // Get customer's current subscription
+router.get('/subscriptions/current', CustomerProtect, getCustomerCurrentPlan); // Get customer's current subscription
 router.post('/subscriptions/renew', renewSubscription); // Renew subscription
 router.get('/subscriptions/check-expiry', checkPlanExpiry); // Check if plan is expired
 

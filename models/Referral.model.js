@@ -15,7 +15,7 @@ const referralSchema = new Schema(
       rewardType: String, // e.g., "cashback", "discount"
       rewardedAt: Date,
     },
-  },
+  },    
   { timestamps: true }
 );
 

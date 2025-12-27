@@ -397,7 +397,7 @@ export const adminOrTeamSubscribeToPlan = async (req, res) => {
   }
 };
 
-export const getCustomerCurrentPlan = async (req, res) => {
+export const getCustomerCurrentPlanold = async (req, res) => {
   try {
     const customer = await Customer.findById(req.user.id).populate(
       'subscribedPlan'
@@ -411,6 +411,131 @@ export const getCustomerCurrentPlan = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// NOTE: Make sure you have imported all necessary models (Customer, Connection, SubscribedPlan)
+
+export const getCustomerCurrentPlanold2 = async (req, res) => {
+  try {
+    // The authenticated customer ID comes from the user token
+    const customerId = req.user.id;
+
+    console.log('req.users getCustomerCurrentPlan', req.user);
+    // The customer must specify which of their connections they want to check
+
+    const activeConnection = req.user.activeConnection;
+    // const { connectionId } = req.params; // Assuming connectionId is passed as a URL parameter
+
+    // 1. Validate Connection and Ownership
+    const connection = await Connection.findById(activeConnection.id).populate({
+      path: 'activePlan', // Populate the SubscribedPlan document
+      select: '-connection -__v', // Exclude connection ID from the SubscribedPlan and version key
+      populate: {
+        path: 'plan', // Inside SubscribedPlan, populate the actual Plan details
+        select: 'name description price duration', // Select key fields from the Plan model
+      },
+    });
+
+    // Check if connection exists
+    if (!connection) {
+      return res.status(404).json({ message: 'Connection not found' });
+    }
+
+    // Security Check: Ensure the connection belongs to the authenticated customer
+    if (connection.customerId.toString() !== customerId.toString()) {
+      return res.status(403).json({
+        message: 'Unauthorized: Connection does not belong to this customer.',
+      });
+    }
+
+    // 2. Check for Active Plan
+    if (!connection.activePlan) {
+      return res.status(200).json({
+        message: 'No active plan found for this connection.',
+        currentPlan: null,
+      });
+    }
+
+    // 3. Success Response
+    return res.status(200).json({
+      message: 'Current active plan retrieved successfully',
+      currentPlan: connection.activePlan,
+      connectionId: connection._id,
+    });
+  } catch (error) {
+    console.error('Error in getCurrentPlan:', error);
+    return res.status(500).json({
+      message: 'Server error',
+      error: error.message,
+    });
+  }
+};
+
+export const getCustomerCurrentPlan = async (req, res) => {
+  try {
+    // The authenticated customer ID comes from the user token
+    const customerId = req.user._id; // Use _id for consistency
+
+    // console.log('req.users getCustomerCurrentPlan', req.user);
+
+    // --- FIX IS HERE ---
+    // 1. Get the activeConnection ID from the user object.
+    const activeConnectionId = req.user.activeConnection;
+
+    // If the activeConnection is an ObjectId object (as shown in your logs),
+    // using toString() ensures we pass a valid string ID to findById().
+    if (!activeConnectionId) {
+      return res
+        .status(404)
+        .json({ message: 'No active connection is set on user profile.' });
+    }
+
+    // Ensure it's a string, especially if it was an ObjectId object/Buffer
+    const connectionId = activeConnectionId.toString();
+
+    // 1. Validate Connection and Ownership
+    const connection = await Connection.findById(connectionId).populate({
+      path: 'activePlan', // Populate the SubscribedPlan document
+      select: '-connection -__v', // Exclude connection ID from the SubscribedPlan and version key
+      populate: {
+        path: 'plan', // Inside SubscribedPlan, populate the actual Plan details
+        select: 'name description price duration internetSpeed internetSpeedUnit', // Select key fields from the Plan model
+      },
+    });
+
+    // Check if connection exists
+    if (!connection) {
+      return res.status(404).json({ message: 'Connection not found' });
+    }
+
+    // Security Check: Ensure the connection belongs to the authenticated customer
+    if (connection.customerId.toString() !== customerId.toString()) {
+      return res.status(403).json({
+        message: 'Unauthorized: Connection does not belong to this customer.',
+      });
+    }
+
+    // 2. Check for Active Plan
+    if (!connection.activePlan) {
+      return res.status(200).json({
+        message: 'No active plan found for this connection.',
+        currentPlan: null,
+      });
+    }
+
+    // 3. Success Response
+    return res.status(200).json({
+      message: 'Current active plan retrieved successfully',
+      currentPlan: connection.activePlan,
+      connectionId: connection._id,
+    });
+  } catch (error) {
+    console.error('Error in getCurrentPlan:', error);
+    return res.status(500).json({
+      message: 'Server error',
+      error: error.message,
+    });
   }
 };
 

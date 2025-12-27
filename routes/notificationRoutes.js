@@ -9,7 +9,7 @@ import {
   registerCustomerFCMToken,
   unregisterCustomerFCMToken,
 } from '../controllers/notificationController.js';
-import { CustomerProtect } from '../middlewares/authMiddleware.js';
+import { AdminProtect, CustomerProtect } from '../middlewares/authMiddleware.js';
 
 // ✅ Import your authentication middleware if needed
 // import { CustomerProtect } from '../middleware/authMiddleware.js';
@@ -42,9 +42,12 @@ router.post('/send/all', CustomerProtect, sendNotificationToAllCustomers);
 
 // Get all notifications for the logged-in user
 router.get('/getNotifications', CustomerProtect, getNotificationsForUser);
+router.get('/getAdminNotifications', AdminProtect, getNotificationsForUser);
 
 // Mark a specific notification as read
 router.patch('/:notificationId/read', CustomerProtect, markNotificationAsRead);
+// router.patch('/:notificationId/read', AdminProtect, markNotificationAsRead);
+router.patch('/admin/:notificationId/read', AdminProtect, markNotificationAsRead);
 
 // ===============================
 // 🔹 (Optional) Delete a notification

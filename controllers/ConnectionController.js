@@ -72,7 +72,7 @@ export const createConnection = async (req, res) => {
       serviceArea,
     } = req.body;
 
-    console.log('req body in connection', req.body);
+    // console.log('req body in connection', req.body);
 
     // Validate that the customer exists
     const customerExists = await Customer.findById(customerId);
@@ -120,10 +120,10 @@ export const createConnection = async (req, res) => {
 // Get all connections
 export const getAllConnections = async (req, res) => {
   try {
-    const connections = await Connection.find();
+    const connections = await Connection.find()
+      .populate('activePlan')
+      .populate('serviceArea');
     // .populate('customer')
-    // .populate('activePlan')
-    // .populate('serviceArea')
     // .populate('agent');
 
     res.status(200).json(connections);
@@ -402,8 +402,6 @@ export const getConnectionsForUser = async (req, res) => {
     });
   }
 };
-
-
 
 export const getActiveConnectionForUser = asyncHandler(async (req, res) => {
   try {
