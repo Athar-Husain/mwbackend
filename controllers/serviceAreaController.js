@@ -1,4 +1,5 @@
 import ServiceArea from '../models/ServiceArea.model.js';
+import TeamModel from '../models/Team.model.js';
 
 // 1. Create a Service Area
 export const createServiceArea = async (req, res) => {
@@ -205,6 +206,35 @@ export const getPaginatedServiceAreas = async (req, res) => {
     });
   } catch (error) {
     console.error('Pagination Error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const getMyAreasTeam = async (req, res) => {
+  try {
+    console.log('req user in getMyAreasTeam', req.user);
+    // 1. Auth check
+    if (!req.user?.id) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    // 2. Get team with populated areas
+    const team = await TeamModel.findById(req.user.id).populate({
+      path: 'area',
+      match: { isActive: true }, // only active areas (optional)
+      select: 'region networkStatus description isActive',
+    });
+
+    if (!team) {
+      return res.status(404).json({ message: 'Team not found' });
+    }
+
+    // 3. Return only assigned areas
+    res.status(200).json({
+      areas: team.area,
+    });
+  } catch (error) {
+    console.error('Get My Areas Error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };

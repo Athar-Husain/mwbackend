@@ -17,11 +17,14 @@ import {
   addPrivateComment,
   getPrivateComments,
   getTicketforUser,
+  getAllTicketsForTeam,
+  getOpenTicketsForTeam,
 } from '../controllers/supportTicketController.js';
 import {
   AdminProtect,
   commonProtect,
   CustomerProtect,
+  TeamProtect,
 } from '../middlewares/authMiddleware.js';
 
 // import { authenticateUser } from '../middlewares/auth.middleware.js'; // Adjust if needed
@@ -39,6 +42,10 @@ router.get('/mytickets', CustomerProtect, getTicketforUser);
 // ✅ Create ticket - Customer only
 router.post('/createTicket', CustomerProtect, createTicket);
 
+// router.post('/team-', AdminProtect, getAllTicketsForTeam);
+router.get('/getAllTicketsForTeam', TeamProtect, getAllTicketsForTeam);
+router.get('/getOpenTicketsForTeam', TeamProtect, getOpenTicketsForTeam);
+router.post('/teamCreateTicket', TeamProtect, internalCreateTicket);
 // ✅ Create ticket - Internal (Admin/Team)
 router.post('/internal', AdminProtect, internalCreateTicket);
 
@@ -52,6 +59,7 @@ router.get('/', AdminProtect, getTickets);
 router.get('/recent', AdminProtect, getRecentTickets);
 
 // ✅ Get single ticket by ID
+router.get('/teamticket/:id', TeamProtect, getTicketById);
 router.get('/:id', AdminProtect, getTicketById);
 
 // ✅ Update ticket (description, issueType, priority)
@@ -84,6 +92,8 @@ router.post('/bulk-update', AdminProtect, bulkUpdateTickets);
 router.post('/:ticketId/public', commonProtect, addPublicComment);
 router.get('/:ticketId/public', commonProtect, getPublicComments);
 
+router.post('/:ticketId/privateteam', TeamProtect, addPrivateComment);
+router.get('/:ticketId/privateteam', TeamProtect, getPrivateComments);
 // Private Comment Routes (Internal Notes)
 router.post('/:ticketId/private', AdminProtect, addPrivateComment);
 router.get('/:ticketId/private', AdminProtect, getPrivateComments);

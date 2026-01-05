@@ -665,8 +665,8 @@ export const resolveTicket = async (req, res) => {
   try {
     const { resolutionMessage } = req.body;
 
-    console.log('resolutionMessage', resolutionMessage);
-    console.log('req.body', req.body);
+    // console.log('resolutionMessage', resolutionMessage);
+    // console.log('req.body', req.body);
     const ticket = await SupportTicket.findById(req.params.id);
     if (!ticket) return res.status(404).json({ message: 'Ticket not found' });
 
@@ -1190,3 +1190,118 @@ export const getTicketforUser = async (req, res) => {
     });
   }
 };
+
+/**
+ * @desc    Get ALL tickets assigned to logged-in TEAM (paginated, infinite scroll)
+ * @route   GET /api/tickets/team/all?page=1&limit=10
+ * @access  Team
+ */
+export const getAllTicketsForTeam = async (req, res) => {
+  try {
+    const teamId = req.user.id;
+
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+
+    const query = {
+      // assignedTo: new mongoose.Types.ObjectId(teamId),
+      assignedTo: teamId,
+      assignedToModel: 'Team',
+    };
+
+    const tickets = await SupportTicket.find(query)
+      .sort({ createdAt: -1 }) // recent first
+      .skip(skip)
+      .limit(limit)
+      .populate('customer', 'name email')
+      .populate('connection')
+      // .populate('connection')
+      .lean();
+
+    const total = await SupportTicket.countDocuments(query);
+
+    res.status(200).json({
+      success: true,
+      page,
+      limit,
+      total,
+      hasMore: skip + tickets.length < total,
+      tickets,
+    });
+  } catch (error) {
+    console.error('getAllTicketsForTeam Error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+/**
+ * @desc    Get OPEN tickets for logged-in TEAM (not Closed / Resolved)
+ * @route   GET /api/tickets/team/open?page=1&limit=10
+ * @access  Team
+ */
+export const getOpenTicketsForTeam = async (req, res) => {
+  try {
+    const teamId = req.user.id;
+
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+
+    const query = {
+      assignedTo: new mongoose.Types.ObjectId(teamId),
+      assignedToModel: 'Team',
+      status: { $nin: ['Closed', 'Resolved'] }, // OPEN ONLY
+    };
+
+    const tickets = await SupportTicket.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate('customer', 'name email')
+      .populate('connection')
+      .lean();
+
+    const total = await SupportTicket.countDocuments(query);
+
+    res.status(200).json({
+      success: true,
+      page,
+      limit,
+      total,
+      hasMore: skip + tickets.length < total,
+      tickets,
+    });
+  } catch (error) {
+    console.error('getOpenTicketsForTeam Error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// export const getTicketsihih = async (req, res) => {
+//   try {
+//     const filters = {};
+//     const { status, priority, issueType, customer, assignedTo } = req.query;
+
+//     if (status) filters.status = status;
+//     if (priority) filters.priority = priority;
+//     if (issueType) filters.issueType = issueType;
+//     if (customer) filters.customer = customer;
+//     if (assignedTo) filters.assignedTo = assignedTo;
+
+//     const tickets = await SupportTicket.find(filters)
+//       .populate('customer')
+//       .populate('assignedTo')
+//       .populate('createdBy')
+//       .populate('updatedBy')
+//       .populate('resolvedBy')
+//       .sort({ createdAt: -1 });
+
+//     res.status(200).json(tickets);
+//   } catch (error) {
+//     console.error('Get Tickets Error:', error);
+//     res
+//       .status(500)
+//       .json({ message: 'Failed to get tickets', error: error.message });
+//   }
+// };

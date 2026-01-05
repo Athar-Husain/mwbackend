@@ -14,10 +14,10 @@ import {
   adminUpdateTeamMemberPassword,
   deleteTeamMember,
   createTeamMember,
+  getTeamLoginStatus,
 } from '../controllers/TeamController.js';
 
 import { AdminProtect, TeamProtect } from '../middlewares/authMiddleware.js';
-// import { create } from 'domain';
 
 const router = express.Router();
 
@@ -29,9 +29,10 @@ router.post('/verify-otp', verifyOtp);
 // ----------- Team protected routes ---------------------
 // router.use('/team', TeamProtect);
 
+router.get('/getTeamLoginStatus', TeamProtect, getTeamLoginStatus);
+router.get('/getprofile', TeamProtect, getTeamProfile);
 router.patch('/change-password', TeamProtect, changePassword);
 router.post('/logout', TeamProtect, logoutTeam);
-router.get('/profile', TeamProtect, getTeamProfile);
 router.patch('/update', TeamProtect, updateTeam);
 
 // ----------- Admin protected routes --------------------

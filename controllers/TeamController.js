@@ -3,11 +3,18 @@ import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import Team from '../models/Team.model.js';
 import { generateOtp } from '../utils/otp.js';
+import asyncHandler from 'express-async-handler';
+import { generateToken } from '../utils/index.js';
 // import ServiceArea from '../models/ServiceArea.model.js';
 
 const { sign } = jwt;
 const otpStore = new Map();
 const OTP_EXPIRY_MS = 5 * 60 * 1000; // 5 minutes
+
+const JWT_SECRET = process.env.JWT_SECRET;
+const OTP_EXPIRY_MINUTES = 10;
+// const TOKEN_EXPIRES_IN_SECONDS = 60 * 2; // 2 minutes
+const TOKEN_EXPIRES_IN_SECONDS = 60 * 60 * 24; // 1 day
 
 // -------------------
 // USER / SELF CONTROLLERS
@@ -58,29 +65,46 @@ export const registerTeam = async (req, res) => {
 export const loginTeam = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: 'Email and Password are required' });
+    }
+
     const team = await Team.findOne({ email });
-    if (!team) return res.status(400).json({ message: 'Invalid credentials' });
+    const isMatch = team && (await team.comparePassword(password));
 
-    const isMatch = await team.comparePassword(password);
-    if (!isMatch)
-      return res.status(400).json({ message: 'Invalid credentials' });
+    if (!team || !isMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
 
-    const token = sign(
-      { id: team._id, role: team.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
+    // const team = await Team.findOne({ email });
+    // if (!team) return res.status(400).json({ message: 'Invalid credentials' });
+
+    // const isMatch = await team.comparePassword(password);
+    // if (!isMatch)
+    //   return res.status(400).json({ message: 'Invalid credentials' });
+
+    const token = generateToken(team._id); // typically expires in 2m
+    res.cookie('token', token, {
+      httpOnly: true,
+      path: '/',
+      sameSite: 'none',
+      secure: true,
+      expires: new Date(Date.now() + TOKEN_EXPIRES_IN_SECONDS * 1000),
+    });
 
     return res.status(200).json({
       message: 'Login successful',
       token,
-      user: {
-        id: team._id,
-        firstName: team.firstName,
-        lastName: team.lastName,
-        email: team.email,
-        role: team.role,
-      },
+      expiresIn: TOKEN_EXPIRES_IN_SECONDS,
+      id: team._id,
+      email: team.email,
+      firstName: team.firstName,
+      lastName: team.lastName,
+      userType: team.userType,
+      role: team.role,
     });
   } catch (error) {
     console.error('Login Error:', error);
@@ -90,10 +114,13 @@ export const loginTeam = async (req, res) => {
 
 // Get own profile
 export const getTeamProfile = async (req, res) => {
+  console.log('getTeamProfile hit in controllers');
+
   try {
     const team = await Team.findById(req.user?.id)
       .select('-password')
-      .populate('leads area');
+      // .populate('leads area');
+      .populate('area');
     if (!team)
       return res.status(404).json({ message: 'Team member not found' });
 
@@ -103,6 +130,37 @@ export const getTeamProfile = async (req, res) => {
     return res.status(500).json({ message: 'Server error' });
   }
 };
+
+// ================================
+// Get Login Status
+// ================================
+export const getTeamLoginStatus = asyncHandler(async (req, res) => {
+  console.log('getLoginStatus hit in controllers');
+  const authHeader = req.headers.authorization;
+
+  // console.log('authHeader in controllers', authHeader);
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(200).json(false);
+  }
+
+  const token = authHeader.split(' ')[1];
+  // console.log('token in controllers', token);
+  if (!token) return res.status(401).json(false);
+
+  const verified = jwt.verify(token, JWT_SECRET);
+  // console.log('verified', verified);
+
+  try {
+    if (verified) {
+      return res.json(true);
+    } else {
+      return res.json(false);
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // Update own profile (partial update allowed)
 export const updateTeam = async (req, res) => {

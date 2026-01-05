@@ -18,6 +18,28 @@ const customerSchema = new Schema({
   // paymentHistory: [{ type: Schema.Types.ObjectId, ref: "Payment" }],
   createdAt: { type: Date, default: Date.now },
   fcmTokens: [{ type: String }], // Stores multiple device tokens
+  referredBy: {
+    type: String,
+    unique: true,
+    uppercase: true,
+  },
+  referralCode: {
+    type: String,
+    unique: true,
+    uppercase: true,
+  },
+  pointsBalance: {
+    type: Number,
+    default: 0,
+  },
+  lifetimePoints: {
+    type: Number,
+    default: 0,
+  },
+  totalSuccessfulReferrals: {
+    type: Number,
+    default: 0,
+  },
 });
 
 customerSchema.pre('save', async function (next) {

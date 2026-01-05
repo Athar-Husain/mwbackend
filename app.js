@@ -12,6 +12,7 @@ import adminRoute from './routes/adminRoutes.js';
 import planRoutes from './routes/PlanRoutes.js';
 import ticketRoutes from './routes/supportTicketRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import leadRoutes from './routes/LeadRoutes.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
@@ -55,6 +56,7 @@ app.use('/api/admin', adminRoute);
 app.use('/api/plans', planRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/leads', leadRoutes);
 
 // 404 Handler
 app.use((req, res) => {

@@ -94,10 +94,10 @@ export const TeamProtect = asyncHandler(async (req, res, next) => {
       return res.status(401).json({ message: 'Team member not found' });
     }
 
-    if (teamMember.userType !== 'team') {
+    if (teamMember.userType !== 'Team') {
       return res
         .status(403)
-        .json({ message: 'Access denied: Not a team member' });
+        .json({ message: 'Access denied: Not a Team member' });
     }
 
     req.user = teamMember;
@@ -134,6 +134,42 @@ export const commonProtect = asyncHandler(async (req, res, next) => {
     }
     if (!user) {
       user = await CustomerModel.findById(decoded.id).select('-password');
+    }
+
+    if (!user) {
+      return res
+        .status(401)
+        .json({ message: 'User not found or invalid token.' });
+    }
+
+    // Attach the user object to the request
+    req.user = user;
+    next();
+  } catch (error) {
+    const isJwtError =
+      error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError';
+    const message = isJwtError ? 'Invalid or expired token' : error.message;
+    res.status(401).json({ message });
+  }
+});
+
+export const AdminTeamProtect = asyncHandler(async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'No authorization header' });
+    }
+
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    let user;
+
+    // Attempt to find the user in each model
+    user = await AdminModel.findById(decoded.id).select('-password');
+    if (!user) {
+      user = await TeamModel.findById(decoded.id).select('-password');
     }
 
     if (!user) {

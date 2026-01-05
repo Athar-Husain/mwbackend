@@ -10,15 +10,18 @@ import {
   searchServiceAreas,
   bulkCreateServiceAreas,
   getPaginatedServiceAreas,
+  getMyAreasTeam,
 } from '../controllers/serviceAreaController.js';
+import { TeamProtect } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
 // 1. Create a Service Area
 router.post('/', createServiceArea);
-
 // 2. Get All Service Areas
 router.get('/all', getAllServiceAreas);
+
+router.get('/getMyAreasTeam', TeamProtect, getMyAreasTeam);
 
 // 3. Get Active Service Areas
 router.get('/active', getActiveServiceAreas);

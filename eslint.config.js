@@ -1,4 +1,4 @@
-// eslintConfigPrettier.config.js
+// eslint.config.js
 import js from '@eslint/js';
 import importPlugin from 'eslint-plugin-import'; // ✅ Correct import
 import globals from 'globals';
