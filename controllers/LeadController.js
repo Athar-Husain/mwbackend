@@ -876,6 +876,39 @@ export const getMyReferrals = asyncHandler(async (req, res) => {
   });
 });
 
+// export const getMyTeamReferrals = asyncHandler(async (req, res) => {
+//   const page = parseInt(req.query.page) || 1;
+//   const limit = parseInt(req.query.limit) || 10;
+//   const skip = (page - 1) * limit;
+
+//   const leads = await Lead.find({
+//     createdBy: req.user._id,
+//     // createdByModel: 'Customer',
+//   })
+//     .select(
+//       'name phone status reward.pointsAwarded reward.incentivePaid createdAt'
+//     )
+//     .sort({ createdAt: -1 })
+//     .skip(skip)
+//     .limit(limit)
+//     .populate('serviceArea', 'name');
+
+//   const total = await Lead.countDocuments({
+//     createdBy: req.user._id,
+//     // createdByModel: 'Customer',
+//   });
+
+//   res.status(200).json({
+//     status: 'success',
+//     results: leads.length,
+//     total,
+//     page,
+//     pages: Math.ceil(total / limit),
+//     // data: { leads },
+//     leads,
+//   });
+// });
+
 export const createLeadManuallyNew = async (req, res) => {
   try {
     const lead = await Lead.create({

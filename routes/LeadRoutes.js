@@ -47,7 +47,8 @@ const router = express.Router();
 // 3. CUSTOMER / REFERRAL ROUTES
 // ---------------------------------------------------------
 // Access: Registered Customers
-router.get('/getMyReferrals', CustomerProtect, getMyReferrals);
+// router.get('/getMyTeamReferrals', TeamProtect, getMyTeamReferrals);
+router.get('/getMyReferrals', commonProtect, getMyReferrals);
 router.post('/createLead', commonProtect, createReferralNew);
 // router.get('/:leadId', AdminProtect, getLeadById);
 
