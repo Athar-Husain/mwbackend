@@ -22,6 +22,7 @@ import {
 } from '../controllers/supportTicketController.js';
 import {
   AdminProtect,
+  AdminTeamProtect,
   commonProtect,
   CustomerProtect,
   TeamProtect,
@@ -63,7 +64,8 @@ router.get('/teamticket/:id', TeamProtect, getTicketById);
 router.get('/:id', AdminProtect, getTicketById);
 
 // ✅ Update ticket (description, issueType, priority)
-router.patch('/:id', AdminProtect, updateTicket);
+// router.patch('/:id', AdminProtect, updateTicket);
+router.patch('/:id', AdminTeamProtect, updateTicket);
 
 // ✅ Delete ticket
 router.delete('/:id', AdminProtect, deleteTicket);
